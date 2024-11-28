@@ -7,6 +7,6 @@ import kotlinx.rpc.annotations.Rpc
 
 @Rpc
 interface QuizService : RemoteService {
-    suspend fun getQuiz(): Quiz
-    suspend fun checkAnswer(index: Int): QuizResult
+    suspend fun getQuiz(): List<Quiz>
+    suspend fun checkAnswer(answerIndexes: List<Int>): QuizResult
 }

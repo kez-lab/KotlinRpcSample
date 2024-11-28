@@ -1,48 +1,68 @@
 package io.github.kez_lab.kotlinxrpc.sample
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import io.github.kez_lab.kotlinxrpc.sample.network.QuizNetworkManager
+import io.github.kez_lab.kotlinxrpc.sample.ui.AppViewModel
+import io.github.kez_lab.kotlinxrpc.sample.ui.QuizEffect.*
+import io.github.kez_lab.kotlinxrpc.sample.ui.quiz.QuizScreen
+import io.github.kez_lab.kotlinxrpc.sample.ui.quiz.ResultScreen
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+expect val DEV_SERVER_HOST: String
+
+private val appViewModel = AppViewModel(QuizNetworkManager())
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        QuizScreen(QuizViewModel())
+        QuizApp()
     }
 }
 
-@Composable
-fun QuizScreen(viewModel: QuizViewModel) {
-    val quiz = viewModel.quiz ?: return
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = quiz.question,
-            modifier = Modifier.padding(8.dp)
-        )
 
-        quiz.options.forEachIndexed { index, option ->
-            ClickableText(
-                text = AnnotatedString(option),
-                onClick = { },
-                modifier = Modifier.padding(8.dp)
+@Composable
+fun QuizApp() {
+    val navController = rememberNavController()
+    val coroutineScope = rememberCoroutineScope()
+
+    NavHost(
+        navController = navController,
+        startDestination = Screen.QuizScreen.route
+    ) {
+        composable(Screen.QuizScreen.route) { backStackEntry ->
+            QuizScreen(viewModel = appViewModel)
+        }
+        composable(Screen.QuizResultResultScreen.route) { backStackEntry ->
+            ResultScreen(
+                viewModel = appViewModel,
+                onClickRestart = {
+                    appViewModel.resetQuiz()
+                    navController.navigate(Screen.QuizScreen.route)
+                }
             )
         }
+    }
+
+    LaunchedEffect(Unit) {
+        appViewModel.quizEffect.onEach { state ->
+            when (state) {
+                QuizReset -> {
+                    navController.navigate(Screen.QuizScreen.route)
+                }
+
+                QuizCompleted -> {
+                    navController.navigate(Screen.QuizResultResultScreen.route)
+                }
+            }
+        }.launchIn(coroutineScope)
     }
 }

@@ -4,6 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class QuizResult(
-    val isCorrect: Boolean,
-    val explanation: String
+    val correctAnswers: Int,    // 정답 개수
 )

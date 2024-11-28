@@ -19,7 +19,11 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
+    sourceSets.all {
+        languageSettings.enableLanguageFeature("ExplicitBackingFields")
+    }
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -75,8 +79,12 @@ kotlin {
             implementation(libs.kotlinx.rpc.krpc.client)
             implementation(libs.kotlinx.rpc.krpc.ktor.client)
             implementation(libs.kotlinx.rpc.krpc.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.websockets)
+
+            implementation(libs.navigation.compose)
         }
 
         desktopMain.dependencies {
@@ -128,6 +136,7 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
 }
 
 compose.desktop {
