@@ -21,7 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.kez_lab.kotlinxrpc.sample.model.Quiz
-import io.github.kez_lab.kotlinxrpc.sample.ui.AppViewModel
+import io.github.kez_lab.kotlinxrpc.sample.AppViewModel
 import kotlinx.coroutines.launch
 
 @Composable

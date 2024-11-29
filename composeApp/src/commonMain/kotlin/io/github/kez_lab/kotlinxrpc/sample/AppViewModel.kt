@@ -1,4 +1,4 @@
-package io.github.kez_lab.kotlinxrpc.sample.ui
+package io.github.kez_lab.kotlinxrpc.sample
 
 import io.github.kez_lab.kotlinxrpc.sample.model.Quiz
 import io.github.kez_lab.kotlinxrpc.sample.model.QuizResult
