@@ -7,9 +7,22 @@ plugins {
 
 group = "io.github.kez_lab.kotlinxrpc.sample"
 version = "1.0.0"
+
 application {
-    mainClass.set("io.github.kez_lab.kotlinxrpc.sample.ApplicationKt")
+    mainClass.set("io.ktor.server.netty.EngineMain")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=${extra["io.ktor.development"] ?: "false"}")
+}
+
+kotlin {
+    jvmToolchain {
+        languageVersion.set(JavaLanguageVersion.of(21))
+    }
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("ktor-fat.jar")
+    }
 }
 
 dependencies {
