@@ -16,8 +16,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-expect val DEV_SERVER_HOST: String
-
 private val appViewModel = AppViewModel(QuizNetworkManager())
 
 @Composable

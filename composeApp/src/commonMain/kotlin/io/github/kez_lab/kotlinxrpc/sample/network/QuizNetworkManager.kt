@@ -1,10 +1,10 @@
 package io.github.kez_lab.kotlinxrpc.sample.network
 
-import io.github.kez_lab.kotlinxrpc.sample.DEV_SERVER_HOST
 import io.github.kez_lab.kotlinxrpc.sample.model.Quiz
 import io.github.kez_lab.kotlinxrpc.sample.model.QuizResult
 import io.github.kez_lab.kotlinxrpc.sample.service.QuizService
 import io.ktor.client.HttpClient
+import io.ktor.http.URLProtocol
 import io.ktor.http.encodedPath
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
@@ -25,8 +25,8 @@ class QuizNetworkManager {
                 installRPC()
             }.rpc {
                 url {
-                    host = DEV_SERVER_HOST
-                    port = 8080
+                    protocol = URLProtocol.HTTPS
+                    host = "kezlab.site"
                     encodedPath = "/quiz"
                 }
                 rpcConfig {
