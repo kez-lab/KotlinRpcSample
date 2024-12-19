@@ -27,6 +27,7 @@ class QuizNetworkManager {
                 url {
                     protocol = URLProtocol.HTTPS
                     host = "kezlab.site"
+                    port = 443
                     encodedPath = "/quiz"
                 }
                 rpcConfig {
