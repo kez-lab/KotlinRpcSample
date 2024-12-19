@@ -52,9 +52,9 @@ class QuizNetworkManager {
         }.getOrDefault(emptyList())
     }
 
-    suspend fun submitAnswers(answerIndexes: List<Int>): QuizResult {
+    suspend fun submitAnswers(answers: List<Int>): QuizResult {
         return runCatching {
-            getQuizService().checkAnswer(answerIndexes)
+            getQuizService().calculateQuizScore(answers)
         }.onFailure { e ->
             println("Error submitting answers: ${e.message}")
         }.getOrDefault(QuizResult(0))

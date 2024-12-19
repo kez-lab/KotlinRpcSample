@@ -52,20 +52,18 @@ class QuizServiceImpl(
 
     override suspend fun getQuiz(): List<Quiz> = quizList
 
-    override suspend fun checkAnswer(answerIndexes: List<Int>): QuizResult {
+    override suspend fun calculateQuizScore(answers: List<Int>): QuizResult {
         var correctAnswers = 0
 
         // 퀴즈 채점
         quizList.forEachIndexed { index, quiz ->
-            val userAnswer = answerIndexes.getOrNull(index)
+            val userAnswer = answers.getOrNull(index)
             val isCorrect = userAnswer == quiz.correctIndex
             if (isCorrect) {
                 correctAnswers++
             }
         }
 
-        return QuizResult(
-            correctAnswers = correctAnswers,
-        )
+        return QuizResult(correctAnswers = correctAnswers)
     }
 }
