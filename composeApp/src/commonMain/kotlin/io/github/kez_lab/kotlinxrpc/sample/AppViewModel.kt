@@ -27,6 +27,9 @@ class AppViewModel(private val manager: QuizNetworkManager) {
     private val _quizEffect = MutableSharedFlow<QuizEffect>()
     val quizEffect = _quizEffect.asSharedFlow()
 
+    val isLoading: StateFlow<Boolean>
+        field = MutableStateFlow(true)
+
     val quiz: StateFlow<List<Quiz>>
         field = MutableStateFlow(emptyList())
 
@@ -36,19 +39,21 @@ class AppViewModel(private val manager: QuizNetworkManager) {
     val currentQuizIndex: StateFlow<Int>
         field = MutableStateFlow(0)
 
-
-    init {
-        loadQuiz()
+    fun initQuiz() {
+        viewModelScope.launch {
+            isLoading.value = true
+            manager.init()
+            loadQuiz()
+            isLoading.value = false
+        }
     }
 
-    fun loadQuiz() {
-        viewModelScope.launch {
-            try {
-                quiz.value = manager.fetchQuizzes()
-                userAnswerClear()
-            } catch (e: Exception) {
-                println("Error loading quiz: ${e.message}")
-            }
+    private suspend fun loadQuiz() {
+        try {
+            quiz.value = manager.fetchQuizzes()
+            userAnswerClear()
+        } catch (e: Exception) {
+            println("Error loading quiz: ${e.message}")
         }
     }
 

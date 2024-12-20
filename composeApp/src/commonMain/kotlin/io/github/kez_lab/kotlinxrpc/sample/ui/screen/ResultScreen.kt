@@ -1,4 +1,4 @@
-package io.github.kez_lab.kotlinxrpc.sample.ui.quiz
+package io.github.kez_lab.kotlinxrpc.sample.ui.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
