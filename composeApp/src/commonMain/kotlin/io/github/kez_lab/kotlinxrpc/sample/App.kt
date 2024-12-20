@@ -16,12 +16,10 @@ import io.github.kez_lab.kotlinxrpc.sample.ui.screen.Screen
 import io.github.kez_lab.kotlinxrpc.sample.ui.screen.StartScreen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 private val appViewModel = AppViewModel(QuizNetworkManager())
 
 @Composable
-@Preview
 fun App() {
     QuizTheme {
         QuizApp()

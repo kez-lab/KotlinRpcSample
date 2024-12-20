@@ -20,8 +20,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.kez_lab.kotlinxrpc.sample.model.Quiz
 import io.github.kez_lab.kotlinxrpc.sample.AppViewModel
+import io.github.kez_lab.kotlinxrpc.sample.model.Quiz
 import kotlinx.coroutines.launch
 
 @Composable
@@ -31,8 +31,6 @@ fun QuizScreen(viewModel: AppViewModel) {
     val currentQuizIndex by viewModel.currentQuizIndex.collectAsState()
     val quizSize = quiz.size
 
-
-    // Pager 상태
     val pagerState = rememberPagerState(
         initialPage = currentQuizIndex,
         pageCount = { quiz.size }
@@ -51,9 +49,17 @@ fun QuizScreen(viewModel: AppViewModel) {
             .padding(16.dp)
     ) {
         LinearProgressIndicator(
-            progress = (currentQuizIndex + 1) / quizSize.toFloat(),
+            progress = (currentQuizIndex) / (quizSize).toFloat(),
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(vertical = 8.dp)
+        )
+
+        Text(
+            text = "${currentQuizIndex + 1} / $quizSize",
+            style = MaterialTheme.typography.subtitle1,
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
                 .padding(vertical = 8.dp)
         )
 
@@ -69,7 +75,11 @@ fun QuizScreen(viewModel: AppViewModel) {
                             currentPage = page,
                             answerIndex = answerIndex
                         )
-                        pagerState.animateScrollToPage(page + 1)
+                        if (page < quiz.lastIndex) {
+                            pagerState.animateScrollToPage(page + 1)
+                        } else {
+                            viewModel.submitAnswers()
+                        }
                     }
                 }
             )
@@ -103,4 +113,3 @@ fun QuestionCard(quiz: Quiz, onAnswerSelected: (Int) -> Unit) {
         }
     }
 }
-
