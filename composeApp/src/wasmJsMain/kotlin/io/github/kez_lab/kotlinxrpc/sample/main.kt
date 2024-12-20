@@ -7,7 +7,7 @@ import kotlinx.browser.document
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     document.body!!.style.apply {
-        width = "85%"
+        width = "100%"
         margin = "0 auto"
         maxWidth = "360px"
     }
