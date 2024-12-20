@@ -6,6 +6,11 @@ import kotlinx.browser.document
 
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    document.body!!.style.apply {
+        width = "85%"
+        margin = "0 auto"
+        maxWidth = "360px"
+    }
     ComposeViewport(document.body!!) {
         App()
     }
