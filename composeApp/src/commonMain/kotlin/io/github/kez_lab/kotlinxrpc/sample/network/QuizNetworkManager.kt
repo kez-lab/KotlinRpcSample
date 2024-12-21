@@ -6,6 +6,8 @@ import io.github.kez_lab.kotlinxrpc.sample.service.QuizService
 import io.ktor.client.HttpClient
 import io.ktor.http.URLProtocol
 import io.ktor.http.encodedPath
+import io.ktor.utils.io.CancellationException
+import kotlinx.rpc.awaitFieldInitialization
 import kotlinx.rpc.krpc.ktor.client.installRPC
 import kotlinx.rpc.krpc.ktor.client.rpc
 import kotlinx.rpc.krpc.ktor.client.rpcConfig
@@ -36,17 +38,44 @@ class QuizNetworkManager {
 
     suspend fun fetchQuizzes(): List<Quiz> {
         return runCatching {
-            quizService.getQuiz()
+            retryWithReconnect {
+                quizService.getQuiz()
+            }
         }.onFailure { e ->
             println("Error fetching quizzes: ${e.message}")
-        }.getOrDefault(emptyList())
+        }.getOrThrow()
     }
 
     suspend fun submitAnswers(answers: List<Int>): QuizResult {
         return runCatching {
-            quizService.calculateQuizScore(answers)
+            retryWithReconnect {
+                quizService.calculateQuizScore(answers)
+            }
         }.onFailure { e ->
             println("Error submitting answers: ${e.message}")
-        }.getOrDefault(QuizResult(0))
+        }.getOrThrow()
+    }
+
+    private suspend fun reconnect() {
+        init()
+    }
+
+    private suspend fun <T> retryWithReconnect(
+        maxRetries: Int = 3,
+        block: suspend () -> T
+    ): T {
+        var attempt = 0
+        while (attempt < maxRetries) {
+            try {
+                return block()
+            } catch (e: CancellationException) {
+                println("WebSocket disconnected. Retrying... Attempt: ${attempt + 1}")
+                reconnect()
+                attempt++
+            } catch (e: Exception) {
+                throw e // Cancellation 외 다른 예외는 그대로 던짐
+            }
+        }
+        throw IllegalStateException("Max retries reached. Unable to complete the operation.")
     }
 }
